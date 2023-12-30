@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'account',
+    'rooms',
 ]
 
 AUTH_USER_MODEL = 'account.User'
