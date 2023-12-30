@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import environ
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 
 # Read .env file (should be kept in the project root alongside settings.py)
-environ.Env.read_env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Django settings
 SECRET_KEY = env('SECRET_KEY')
@@ -40,7 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+
+    'account',
 ]
+
+AUTH_USER_MODEL = 'account.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
