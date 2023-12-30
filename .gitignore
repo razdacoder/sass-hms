@@ -1,0 +1,45 @@
+# Django
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+env/
+env*/
+*.pyc
+*.pyo
+*.pyd
+
+# Media
+media/
+*.db
+*.sqlite3
+
+# Static files
+staticfiles/
+*.pyc
+
+# Local development settings
+local_settings.py
+
+# Visual Studio Code settings
+.vscode/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# React
+/build/
+.DS_Store
+npm-debug.log
+yarn-error.log
