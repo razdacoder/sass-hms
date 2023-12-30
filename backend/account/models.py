@@ -54,8 +54,10 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
 
     ROLE_CHOICES = [
+        ('ceo', 'CEO'),
         ('receptionist', 'Receptionist'),
         ('manager', 'Manager'),
+        ('it', 'IT')
     ]
 
     USER_TYPE_CHOICES = [
