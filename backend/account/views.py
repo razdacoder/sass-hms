@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from rest_framework.generics import ListCreateAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.decorators import APIView
 
 from django.core.signing import TimestampSigner
@@ -16,14 +16,14 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 
-from .permissions import CurrentUserOrAdmin, CurrentUserOrAdminOrReadOnly
+from .permissions import CurrentUserOrAdmin, CurrentUserOrAdminOrReadOnly, IsCEOorITStaff
 
 from .models import User, Hotel
 from .serializers import (UserSerializer, ActivationSerializer,
                           UserDeleteSerializer,
                           SetPasswordSerializer,
                           ResetPasswordSerializer,
-                          ResetPasswordConfirmSerializer, UserUpdateSerializer)
+                          ResetPasswordConfirmSerializer, UserUpdateSerializer, UserHotelSerializer)
 from .utils import generate_otp, send_otp_email, send_password_reset_email
 
 # Create your views here.
@@ -112,7 +112,7 @@ class InnEaseTokenOptainPairView(TokenObtainPairView):
         return response
 
 
-class LMSTokenRefreshView(TokenRefreshView):
+class InnEaseTokenRefreshView(TokenRefreshView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         refresh_token = request.COOKIES.get(
             settings.SIMPLE_JWT['AUTH_REFRESH_COOKIE'])
@@ -133,7 +133,7 @@ class LMSTokenRefreshView(TokenRefreshView):
             return response
 
 
-class LMSTokenVerifyView(TokenVerifyView):
+class InnEaseTokenVerifyView(TokenVerifyView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         access_token = request.COOKIES.get(settings.SIMPLE_JWT['AUTH_COOKIE'])
         if access_token:
@@ -142,7 +142,7 @@ class LMSTokenVerifyView(TokenVerifyView):
         return super().post(request, *args, **kwargs)
 
 
-class LogoutView(APIView):
+class InnEaseLogoutView(APIView):
     def post(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_204_NO_CONTENT)
         response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
@@ -151,7 +151,7 @@ class LogoutView(APIView):
         return response
 
 
-class UserDetailView(RetrieveUpdateDestroyAPIView):
+class UserDetailView(RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [CurrentUserOrAdmin]
@@ -159,21 +159,27 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
     def get_object(self):
         return self.request.user
 
-    def partial_update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = UserUpdateSerializer(instance, request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def perform_destroy(self, request, *args, **kwargs):
-        user = self.get_object()
-        user.is_active = False
-        user.save()
-        LogoutView.as_view()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class UserHotelDetailView(RetrieveUpdateDestroyAPIView):
+    lookup_field = "id"
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsCEOorITStaff]
+
+
+class UserHotelListView(ListCreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = [IsCEOorITStaff]
+    serializer_class = UserHotelSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(hotel=self.request.user.hotel)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['user'] = self.request.user
+        return context
 
 
 class SetPasswordView(CreateAPIView):
@@ -192,7 +198,6 @@ class SetPasswordView(CreateAPIView):
                 instance.set_password(
                     serializer.initial_data.get("new_password"))
                 instance.save()
-                LogoutView.as_view()
                 return Response({"message": "Password Changed Successfully"}, status=status.HTTP_200_OK)
             else:
                 return Response({"message": "Incorrect Password"}, status=status.HTTP_400_BAD_REQUEST)

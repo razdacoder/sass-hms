@@ -8,9 +8,31 @@ class HotelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UserHotelSerializer(serializers.ModelSerializer):
+    hotel = HotelSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'name', 'role',
+                  'password', 'hotel']
+        extra_kwargs = {'password': {'write_only': True},
+                        'id': {'read_only': True}, }
+
+    def create(self, validated_data):
+        context = self.context
+        hotel = context['user'].hotel
+        return User.objects.create_user(
+            email=validated_data['email'],
+            name=validated_data['name'],
+            hotel=hotel,
+            password=validated_data['password'],
+            role=validated_data['role']
+        )
+
+
 class UserSerializer(serializers.ModelSerializer):
     re_password = serializers.CharField(write_only=True)
-    hotel = HotelSerializer()
+    hotel = HotelSerializer(read_only=True)
 
     class Meta:
         model = User
