@@ -6,9 +6,10 @@ from account.models import Hotel
 class Room(models.Model):
     ROOM_STATUS_CHOICES = [
         ('available', 'Available'),
-        ('booked', 'Booked'),
+        ('occupied', 'Occupied'),
         ('maintenance', 'Maintenance'),
         ('reserved', 'Reserved'),
+        ('out-of-order', "Out of Order")
     ]
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     hotel = models.ForeignKey(
