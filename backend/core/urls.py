@@ -7,4 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/v1/auth/users/", include("account.urls")),
     path('api/v1/rooms/', include('rooms.urls')),
+    path('api/v1/', include('bookings.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

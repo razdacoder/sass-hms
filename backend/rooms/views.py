@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from .models import Room
 from .serializers import RoomSerializer
-from .permissions import IsAllowedToWriteRoom
+from .permissions import IsAllowedToWrite
 
 
 class RoomViewset(ModelViewSet):
@@ -18,7 +18,7 @@ class RoomViewset(ModelViewSet):
         if self.action in ['list', 'retrieve', 'partial_update']:
             return [IsAuthenticated()]
         else:
-            return [IsAuthenticated(), IsAllowedToWriteRoom()]
+            return [IsAuthenticated(), IsAllowedToWrite()]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

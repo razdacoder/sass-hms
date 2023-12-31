@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission
 
 
-class IsAllowedToWriteRoom(BasePermission):
+class IsAllowedToWrite(BasePermission):
     def has_permission(self, request, view):
         return request.user.role in ['ceo', 'it', 'manager']
 
