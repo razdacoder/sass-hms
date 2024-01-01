@@ -10,4 +10,25 @@ const register = async (data: RegisterType) => {
   }
 };
 
-export { register };
+const activate = async (data: {
+  activation_code: string;
+  activation_token: string;
+}) => {
+  try {
+    const response = await api.post("auth/users/activate/", data);
+    return response.data;
+  } catch (error: any) {
+    return error.response.data.message;
+  }
+};
+
+const login = async (data: { email: string; password: string }) => {
+  try {
+    const response = await api.post("auth/users/login/", data);
+    return response.data;
+  } catch (error: any) {
+    return error.response.data.message;
+  }
+};
+
+export { activate, login, register };

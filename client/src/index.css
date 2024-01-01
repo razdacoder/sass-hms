@@ -14,6 +14,10 @@ body {
   font-family: "Space Mono", monospace;
 }
 
+.inputStyle {
+  width: 3rem !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
