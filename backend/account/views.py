@@ -48,13 +48,10 @@ class UserView(ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         email = request.data.get("email")
         password = request.data.get("password")
-        re_password = request.data.get("re_password")
         name = request.data.get("name")
         hotel = request.data.get("hotel")
         if User.objects.filter(email=email).exists():
             return Response({"message": "Account with email already exists."}, status=status.HTTP_400_BAD_REQUEST)
-        if password != re_password:
-            return Response({'message': "Passwords do no match!!"}, status=status.HTTP_400_BAD_REQUEST)
         activation_code = generate_otp()
         activation_token = signer.sign_object({"email": email, "name": name,
                                                "password": password, "hotel": hotel, "activation_code": activation_code})
