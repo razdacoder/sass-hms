@@ -3,6 +3,7 @@ import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Register from "@/pages/Register";
+import ResetPassword from "@/pages/ResetPassword";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/activate/:token" element={<Activate />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

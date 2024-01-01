@@ -15,31 +15,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import * as z from "zod";
-import useLogin from "./useLogin";
+import useResetPassword from "./useResetPassword";
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
 });
 
-export default function LoginForm() {
-  const { mutate, status } = useLogin();
+export default function ResetPasswordForm() {
+  const { mutate, status } = useResetPassword();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
-
   const { isSubmitting, isValid } = form.formState;
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutate(values);
   }
-
   return (
     <main className="w-full h-screen flex justify-center items-center">
       <div className="">
@@ -49,9 +43,9 @@ export default function LoginForm() {
 
         <div>
           <div className="mb-3">
-            <Heading3>Login into your account</Heading3>
+            <Heading3>Reset your password</Heading3>
             <Paragraph>
-              Enter your account details to login into your account.
+              Enter your email to receive a password reset link.
             </Paragraph>
           </div>
 
@@ -76,34 +70,6 @@ export default function LoginForm() {
                   </FormItem>
                 )}
               />
-              <div className="flex justify-end">
-                <Link
-                  className="text-sm text-primary font-medium"
-                  to="/reset-password"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Password"
-                        {...field}
-                        disabled={status === "pending"}
-                      />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <div className="mt-4">
                 <Button
@@ -111,15 +77,14 @@ export default function LoginForm() {
                   className="w-full disabled:cursor-not-allowed"
                   type="submit"
                 >
-                  {status === "pending" ? <Spinner /> : "Login"}
+                  {status === "pending" ? <Spinner /> : "Reset Password"}
                 </Button>
               </div>
             </form>
           </Form>
           <Paragraph className="text-sm text-center mt-6">
-            Don't have an account? &nbsp;
-            <Link to="/register" className="text-primary font-semibold text-sm">
-              Create an account
+            <Link to="/login" className="text-primary font-semibold text-sm">
+              Back to login
             </Link>
           </Paragraph>
         </div>

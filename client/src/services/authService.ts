@@ -33,4 +33,15 @@ const login = async (data: { email: string; password: string }) => {
   }
 };
 
-export { activate, login, register };
+const resetPassword = async (data: { email: string }) => {
+  try {
+    const response = await api.post("auth/users/reset-password/", data, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error: any) {
+    return error.response.data.message;
+  }
+};
+
+export { activate, login, register, resetPassword };
