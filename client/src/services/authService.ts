@@ -24,7 +24,9 @@ const activate = async (data: {
 
 const login = async (data: { email: string; password: string }) => {
   try {
-    const response = await api.post("auth/users/login/", data);
+    const response = await api.post("auth/users/login/", data, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error: any) {
     return error.response.data.message;

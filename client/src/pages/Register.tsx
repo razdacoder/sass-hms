@@ -1,7 +1,5 @@
-import RegisterForm from "@/features/authentication/register-form";
+import RegisterForm from "@/features/authentication/register/register-form";
 
-function Register() {
+export default function Register() {
   return <RegisterForm />;
 }
-
-export default Register;
