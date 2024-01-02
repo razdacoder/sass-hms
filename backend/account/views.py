@@ -217,6 +217,8 @@ class ResetPassword(CreateAPIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# TODO: Fix the password reset confirm view
+
 
 class ResetPasswordConfirm(CreateAPIView):
     permission_classes = [AllowAny]

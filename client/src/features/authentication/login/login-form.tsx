@@ -56,12 +56,12 @@ export default function LoginForm() {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="mb-4">
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
@@ -76,7 +76,7 @@ export default function LoginForm() {
                   </FormItem>
                 )}
               />
-              <div className="flex justify-end">
+              <div className="flex justify-end ">
                 <Link
                   className="text-sm text-primary font-medium"
                   to="/reset-password"
@@ -89,7 +89,7 @@ export default function LoginForm() {
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="mb-4">
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
