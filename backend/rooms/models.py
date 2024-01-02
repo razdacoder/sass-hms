@@ -18,9 +18,8 @@ class Room(models.Model):
     room_type = models.CharField(max_length=50)
     image = models.ImageField(upload_to="room_images/", null=True, blank=True)
     max_capacity = models.IntegerField()
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    discount_price = models.DecimalField(
-        max_digits=8, decimal_places=2, default=0.00)
+    price = models.FloatField()
+    discount_price = models.FloatField(default=0.0)
     status = models.CharField(
         max_length=20, choices=ROOM_STATUS_CHOICES, default="available")
     created_at = models.DateTimeField(auto_now_add=True)
