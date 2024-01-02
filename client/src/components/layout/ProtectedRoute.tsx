@@ -1,8 +1,7 @@
-// import { useUser } from "../features/authentication/useUser";
 import useAuth from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ReactNode, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Spinner from "../ui/spinner";
 
 type ProtectedRouteProps = {
@@ -10,7 +9,6 @@ type ProtectedRouteProps = {
 };
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const navigate = useNavigate();
   const { isAuthenticaed } = useAuthStore();
   const { mutate, status } = useAuth();
 
@@ -27,7 +25,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!isAuthenticaed) {
-    return navigate("/login");
+    return <Navigate to="login" replace />;
   }
 
   return children;
