@@ -28,3 +28,12 @@ export const updateRoom = async (data: Room) => {
 
   return response.data;
 };
+
+export const deleteRoom = async (id: string) => {
+  const response = await api.delete(`rooms/${id}/`);
+  if (response.status != 204) {
+    throw new Error("Could not delete room");
+  }
+
+  return response.data;
+};

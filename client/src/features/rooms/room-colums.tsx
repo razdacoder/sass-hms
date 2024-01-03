@@ -2,6 +2,17 @@ import { formatPriceToNaira } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit, Minus, MoreVertical, Trash2Icon } from "lucide-react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,8 +30,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Spinner from "@/components/ui/spinner";
 import React from "react";
 import CreateEditForm from "./create-edit-form";
+import useDeleteRoom from "./useDeleteRoom";
 
 export const roomColumns: ColumnDef<Room>[] = [
   {
@@ -79,47 +93,63 @@ export const roomColumns: ColumnDef<Room>[] = [
     id: "actions",
     cell: ({ row }) => {
       const room = row.original;
-
       const [open, setOpen] = React.useState(false);
+      const { deleteRoomFn, status } = useDeleteRoom();
 
       return (
-        // open={opens === "roomEdit"} onOpenChange={setIsOpen}
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DialogTrigger asChild>
-                <DropdownMenuItem className="flex items-center gap-x-3 cursor-pointer">
-                  <Edit className="w-4 h-4" />
-                  Edit room
-                </DropdownMenuItem>
-              </DialogTrigger>
-
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="flex items-center gap-x-3 cursor-pointer"
-                // onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                <Trash2Icon className="w-4 h-4" />
-                Delete room
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Edit room</DialogTitle>
-            </DialogHeader>
-            <CreateEditForm
-              setOpen={(value) => setOpen(value)}
-              roomToEdit={room}
-            />
-          </DialogContent>
-        </Dialog>
+        <>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <AlertDialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem className="flex items-center gap-x-3 cursor-pointer">
+                      <Edit className="w-4 h-4" />
+                      Edit room
+                    </DropdownMenuItem>
+                  </DialogTrigger>
+                  <DropdownMenuSeparator />
+                  <AlertDialogTrigger asChild>
+                    <DropdownMenuItem className="flex items-center gap-x-3 cursor-pointer">
+                      <Trash2Icon className="w-4 h-4" />
+                      Delete room
+                    </DropdownMenuItem>
+                  </AlertDialogTrigger>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    this room from your hotel.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => deleteRoomFn(room.id)}>
+                    {status === "pending" ? <Spinner /> : "Delete"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit room</DialogTitle>
+              </DialogHeader>
+              <CreateEditForm
+                setOpen={(value) => setOpen(value)}
+                roomToEdit={room}
+              />
+            </DialogContent>
+          </Dialog>
+        </>
       );
     },
   },
