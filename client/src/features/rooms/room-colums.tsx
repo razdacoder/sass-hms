@@ -1,9 +1,15 @@
 import { formatPriceToNaira } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { Minus } from "lucide-react";
+import { Edit, Minus, MoreVertical, Trash2Icon } from "lucide-react";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const roomColumns: ColumnDef<Room>[] = [
   {
@@ -48,6 +54,40 @@ export const roomColumns: ColumnDef<Room>[] = [
             </span>
           )}
         </>
+      );
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const payment = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              className="flex items-center gap-x-3 cursor-pointer"
+              onClick={() => navigator.clipboard.writeText(payment.id)}
+            >
+              <Edit className="w-4 h-4" />
+              Edit room
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="flex items-center gap-x-3 cursor-pointer"
+              onClick={() => navigator.clipboard.writeText(payment.id)}
+            >
+              <Trash2Icon className="w-4 h-4" />
+              Delete room
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

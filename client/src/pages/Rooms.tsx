@@ -1,20 +1,30 @@
-import { Button } from "@/components/ui/button";
-import { Heading2 } from "@/components/ui/typography";
 import RoomPage from "@/features/rooms/room-page";
-import { Plus } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+});
 
 export default function Rooms() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+    },
+  });
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values);
+  }
   return (
     <>
-      <div className="flex justify-between items-center">
-        <Heading2>All rooms</Heading2>
-        <div>
-          <Button className="flex gap-x-3 font-medium items-center">
-            <Plus className="w-4 h-4" />
-            Add room
-          </Button>
-        </div>
-      </div>
       <RoomPage />
     </>
   );
