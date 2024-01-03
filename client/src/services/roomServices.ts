@@ -19,3 +19,12 @@ export const createRoom = async (data: {
 
   return response.data;
 };
+
+export const updateRoom = async (data: Room) => {
+  const response = await api.put(`rooms/${data.id}/`, data);
+  if (response.status != 200) {
+    throw new Error("Room could not be updated");
+  }
+
+  return response.data;
+};

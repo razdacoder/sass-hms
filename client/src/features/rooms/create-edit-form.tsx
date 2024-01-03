@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { roomSchema } from "./room-page";
 import useCreateRoom from "./useCreateRoom";
+import useEditRoom from "./useEditRoom";
 
 type CreateEditProps = {
   roomToEdit?: Room;
@@ -25,7 +26,9 @@ export default function CreateEditForm({
   roomToEdit,
   setOpen,
 }: CreateEditProps) {
-  const { createNewRoom, status } = useCreateRoom();
+  const { createNewRoom, status: isCreating } = useCreateRoom();
+  const { editRoom, isEditing } = useEditRoom();
+  const isWorking = isCreating || isEditing;
 
   const isEditMode = Boolean(roomToEdit);
 
@@ -50,18 +53,29 @@ export default function CreateEditForm({
 
   const { isValid } = form.formState;
 
-  const parseValues = (values: z.infer<typeof roomSchema>) => {
+  const parseValues = (values: z.infer<typeof roomSchema> | Room) => {
     return {
       ...values,
-      max_capacity: parseInt(values.max_capacity),
-      price: parseFloat(values.price),
-      discount_price: parseFloat(values.discount_price),
+      max_capacity: parseInt(values.max_capacity as string),
+      price: parseFloat(values.price as string),
+      discount_price: parseFloat(values.discount_price as string),
+    };
+  };
+
+  const mergeEditvalues = (values: z.infer<typeof roomSchema>, room: Room) => {
+    return {
+      ...room,
+      ...values,
     };
   };
 
   function onSubmit(values: z.infer<typeof roomSchema>) {
     if (isValid) {
-      createNewRoom(parseValues(values));
+      isEditMode
+        ? editRoom(
+            parseValues(mergeEditvalues(values, roomToEdit as Room)) as Room
+          )
+        : createNewRoom(parseValues(values));
     }
     form.reset();
     setOpen(false);
@@ -76,7 +90,7 @@ export default function CreateEditForm({
             <FormItem>
               <FormLabel>Room number</FormLabel>
               <FormControl>
-                <Input disabled={status === "pending"} {...field} />
+                <Input disabled={isWorking === "pending"} {...field} />
               </FormControl>
 
               <FormMessage />
@@ -90,7 +104,7 @@ export default function CreateEditForm({
             <FormItem>
               <FormLabel>Room type</FormLabel>
               <FormControl>
-                <Input disabled={status === "pending"} {...field} />
+                <Input disabled={isWorking === "pending"} {...field} />
               </FormControl>
 
               <FormMessage />
@@ -104,7 +118,7 @@ export default function CreateEditForm({
             <FormItem>
               <FormLabel>Max capacity</FormLabel>
               <FormControl>
-                <Input disabled={status === "pending"} {...field} />
+                <Input disabled={isWorking === "pending"} {...field} />
               </FormControl>
 
               <FormMessage />
@@ -118,7 +132,7 @@ export default function CreateEditForm({
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input disabled={status === "pending"} {...field} />
+                <Input disabled={isWorking === "pending"} {...field} />
               </FormControl>
 
               <FormMessage />
@@ -132,7 +146,7 @@ export default function CreateEditForm({
             <FormItem>
               <FormLabel>Discount price</FormLabel>
               <FormControl>
-                <Input disabled={status === "pending"} {...field} />
+                <Input disabled={isWorking === "pending"} {...field} />
               </FormControl>
 
               <FormMessage />
@@ -142,7 +156,13 @@ export default function CreateEditForm({
 
         <DialogFooter>
           <Button disabled={status === "pending"} type="submit">
-            {status === "pending" ? <Spinner /> : "Add room"}
+            {isWorking === "pending" ? (
+              <Spinner />
+            ) : isEditMode ? (
+              "Update room"
+            ) : (
+              "Add room"
+            )}
           </Button>
         </DialogFooter>
       </form>
