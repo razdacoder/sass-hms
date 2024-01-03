@@ -1,16 +1,27 @@
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useModalStore } from "@/store/useModal";
 import React from "react";
 
 type ModalProps = {
-  trigger: React.ReactNode;
+  formName: string;
   children: React.ReactNode;
 };
 
-export function Modal({ trigger, children }: ModalProps) {
+export function Modal({ children, formName }: ModalProps) {
+  const { isOpen, setIsOpen } = useModalStore();
   return (
-    <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">{children}</DialogContent>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>{formName}</DialogTitle>
+        </DialogHeader>
+        {children}
+      </DialogContent>
     </Dialog>
   );
 }
