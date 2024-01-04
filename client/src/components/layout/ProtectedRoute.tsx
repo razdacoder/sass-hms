@@ -18,7 +18,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   if (status === "pending") {
     return (
-      <div className="h-screen flex justify-center items-center">
+      <div className="h-screen w-full flex justify-center items-center">
         <Spinner className="w-8 h-8" />
       </div>
     );

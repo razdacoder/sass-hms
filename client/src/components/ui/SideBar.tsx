@@ -3,9 +3,12 @@ import Logo from "./logo";
 
 export default function SideBar() {
   return (
-    <aside className="py-[3.2rem] px-[2.4rem] border-r flex flex-col gap-[3.2rem] row-[1/-1]">
-      <div className="h-24">
+    <aside className="py-4 px-3 border-r flex flex-col gap-y-6 row-[1/-1]">
+      <div className="flex gap-x-3 items-center">
         <Logo />
+        <span className="text-lg font-extrabold font-space">
+          InnEase Manager
+        </span>
       </div>
       <MainNav />
     </aside>

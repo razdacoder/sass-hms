@@ -9,7 +9,7 @@ export default function AppLayout() {
       <Header />
       <SideBar />
       <ScrollArea>
-        <main className="container flex flex-col gap-[3.2rem] px-[6.4rem] pt-[4rem] pb-[4.8rem]">
+        <main className="container flex flex-col gap-y-4 py-4">
           <Outlet />
         </main>
       </ScrollArea>
