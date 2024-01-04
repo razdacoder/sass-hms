@@ -36,7 +36,7 @@ class Booking(models.Model):
     check_out_date = models.DateField()
     number_of_guests = models.SmallIntegerField()
     special_requests = models.TextField(null=True, blank=True)
-    total_cost = models.DecimalField(max_digits=8, decimal_places=2)
+    total_cost = models.FloatField()
     isPaid = models.BooleanField()
     booking_status = models.CharField(max_length=20,
                                       choices=BOOKING_STATUS, default='unconfirmed')
