@@ -5,17 +5,10 @@ from rooms.models import Room
 
 
 class Guest(models.Model):
-    TITLE = [
-        ('none', 'None'),
-        ('mr', 'Mr'),
-        ('mrs', 'Mrs'),
-        ('miss', 'Miss'),
-    ]
+
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    title = models.CharField(max_length=5, choices=TITLE, default='none')
     fullName = models.CharField(max_length=100)
     email = models.EmailField(max_length=100)
-    phoneNumber = models.CharField(max_length=15)
     hotel = models.ForeignKey(
         Hotel, related_name="hotel_guests", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

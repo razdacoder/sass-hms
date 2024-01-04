@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
-import React from "react";
+import { useState } from "react";
 import * as z from "zod";
 import { DataTable } from "../../components/ui/data-table";
 import CreateEditForm from "./create-edit-form";
@@ -29,8 +29,7 @@ export const roomSchema = z.object({
 
 export default function RoomPage() {
   const { isLoading, rooms } = useRooms();
-  //   const { opens, setOpen, setIsOpen } = useModalStore();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   if (isLoading) {
     return <Spinner />;
