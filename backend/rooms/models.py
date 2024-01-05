@@ -14,7 +14,7 @@ class Room(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     hotel = models.ForeignKey(
         Hotel, related_name='hotel_room', on_delete=models.CASCADE)
-    room_number = models.CharField(max_length=10, unique=True)
+    room_number = models.CharField(max_length=10)
     room_type = models.CharField(max_length=50)
     image = models.ImageField(upload_to="room_images/", null=True, blank=True)
     max_capacity = models.IntegerField()

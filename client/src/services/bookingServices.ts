@@ -30,3 +30,11 @@ export const updateBooking = async ({
 
   return response.data;
 };
+
+export const deleteBooking = async (id: number) => {
+  const response = await api.delete(`bookings/${id}/`);
+  if (response.status != 204) {
+    throw new Error("Could not delete booking");
+  }
+  return response.data;
+};

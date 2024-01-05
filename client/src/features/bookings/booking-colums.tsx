@@ -1,8 +1,19 @@
 import { Badge } from "@/components/ui/badge";
 import { cn, formatDate, formatPriceToNaira } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit, Eye, MoreVertical, Trash } from "lucide-react";
+import { Edit, Eye, MoreVertical, Trash2Icon } from "lucide-react";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,8 +29,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Spinner from "@/components/ui/spinner";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import CreateEditBookingForm from "./create-edit-booking-form";
+import useDeleteBooking from "./useDeleteBooking";
 
 export const bookingsColumn: ColumnDef<Booking>[] = [
   {
@@ -114,36 +128,61 @@ export const bookingsColumn: ColumnDef<Booking>[] = [
     cell: ({ row }) => {
       const [open, setOpen] = useState(false);
       const booking = row.original;
+      const { deleteBookingFn, deleting } = useDeleteBooking();
 
       return (
         <Dialog open={open} onOpenChange={setOpen}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="flex gap-x-2 items-center cursor-pointer">
-                <Eye className="w-4 h-4" />
-                <span>View Booking</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DialogTrigger asChild>
-                <DropdownMenuItem className="flex gap-x-2 items-center cursor-pointer">
-                  <Edit className="w-4 h-4" />
-                  <span>Edit Booking</span>
+          <AlertDialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`/bookings/${booking.id}`}
+                    className="flex gap-x-2 items-center cursor-pointer"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>View Booking</span>
+                  </Link>
                 </DropdownMenuItem>
-              </DialogTrigger>
+                <DropdownMenuSeparator />
+                <DialogTrigger asChild>
+                  <DropdownMenuItem className="flex gap-x-2 items-center cursor-pointer">
+                    <Edit className="w-4 h-4" />
+                    <span>Edit Booking</span>
+                  </DropdownMenuItem>
+                </DialogTrigger>
 
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex gap-x-2 items-center cursor-pointer">
-                <Trash className="w-4 h-4" />
-                <span>Delete Booking</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuSeparator />
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem className="flex items-center gap-x-3 cursor-pointer">
+                    <Trash2Icon className="w-4 h-4" />
+                    Delete booking
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this booking from your hotel.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => deleteBookingFn(booking.id)}>
+                  {deleting === "pending" ? <Spinner /> : "Delete"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>

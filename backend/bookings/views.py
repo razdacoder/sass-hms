@@ -25,3 +25,9 @@ class BookingViewset(ModelViewSet):
         user = self.request.user
         queryset = super().get_queryset()
         return queryset.filter(room__hotel=user.hotel)
+
+    def destroy(self, request, *args, **kwargs):
+        obj = self.get_object()
+        obj.room.status = "maintanance"
+        obj.room.save()
+        return super().destroy(request, *args, **kwargs)
