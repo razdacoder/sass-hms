@@ -45,7 +45,6 @@ class BookingSerializer(serializers.ModelSerializer):
             "fullName": guest_obj["fullName"]})
 
         price = room.discount_price if room.discount_price > 0 else room.price
-        print(price)
         total_cost = calculate_total_price(
             check_in_date, check_out_date, price)
         status = "reserved" if booking_status == "unconfirmed" else "occupied"
@@ -62,3 +61,33 @@ class BookingSerializer(serializers.ModelSerializer):
             room=room,
             guest=guest,
         )
+
+    def update(self, instance, validated_data):
+        number_of_guests = validated_data.get(
+            'number_of_guests', instance.number_of_guests)
+        instance.check_in_date = validated_data.get(
+            'check_in_date', instance.check_in_date)
+        instance.check_out_date = validated_data.get(
+            'check_out_date', instance.check_out_date)
+        instance.booking_status = validated_data.get(
+            'booking_status', instance.booking_status)
+        instance.isPaid = validated_data.get('isPaid', instance.isPaid)
+        instance.special_requests = validated_data.get(
+            'special_requests', instance.special_requests)
+        room_type = validated_data.get('room_type')
+        if room_type != instance.room.room_type:
+            instance.room.status = "maintenance"
+            instance.room.save()
+            room = Room.objects.filter(
+                room_type=room_type, max_capacity__gte=number_of_guests, status="available").first()
+            instance.room = room
+
+        instance.number_of_guests = number_of_guests
+        price = instance.room.discount_price if instance.room.discount_price > 0 else instance.room.price
+        total_cost = calculate_total_price(
+            validated_data.get('check_in_date'), validated_data.get('check_out_date', instance.check_in_date), price)
+        status = "reserved" if instance.booking_status == "unconfirmed" else "occupied"
+        instance.room.status = status
+        instance.room.save()
+        instance.total_cost = total_cost
+        return instance
