@@ -90,4 +90,5 @@ class BookingSerializer(serializers.ModelSerializer):
         instance.room.status = status
         instance.room.save()
         instance.total_cost = total_cost
+        instance.save()
         return instance
