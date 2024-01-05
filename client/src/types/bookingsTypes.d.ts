@@ -2,7 +2,6 @@ type Guest = {
   id: string;
   fullName: string;
   email: string;
-  phoneNumber: string;
 };
 
 type Booking = {
@@ -18,4 +17,18 @@ type Booking = {
   booking_status: string;
   created_at: Date;
   updated_at: Date;
+};
+
+type CreateBooking = {
+  room_type: string;
+  number_of_guests: number;
+  check_in_date: string;
+  check_out_date: string;
+  booking_status: string;
+  special_requests: string;
+  isPaid: boolean;
+  guest: {
+    email: string;
+    fullName: string;
+  };
 };

@@ -33,11 +33,11 @@ export default function BookingsPage() {
               Create new booking
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
               <DialogTitle>Create new booking</DialogTitle>
             </DialogHeader>
-            <CreateEditBookingForm />
+            <CreateEditBookingForm setOpen={(value) => setOpen(value)} />
           </DialogContent>
         </Dialog>
       </div>
