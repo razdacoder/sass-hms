@@ -33,6 +33,7 @@ import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import useCreateBooking from "./useCreateBooking";
+import useEditBooking from "./useEditBooking";
 
 const bookingSchema = z.object({
   check_in_date: z.date(),
@@ -47,30 +48,49 @@ const bookingSchema = z.object({
 });
 
 type CreateEditProps = {
-  bookinToEdit?: Booking;
+  bookingToEdit?: Booking;
   setOpen: (value: boolean) => void;
 };
 
-export default function CreateEditBookingForm({ setOpen }: CreateEditProps) {
+export default function CreateEditBookingForm({
+  setOpen,
+  bookingToEdit,
+}: CreateEditProps) {
   const { data, isLoading } = useQuery({
     queryKey: ["room_types"],
     queryFn: getRoomsTypes,
   });
   const { createBookingFn, creating } = useCreateBooking();
-  const isWorking = creating;
+  const { updateBookingFn, editing } = useEditBooking();
+  const isEditMode = Boolean(bookingToEdit);
+  const isWorking = creating || editing;
   const form = useForm<z.infer<typeof bookingSchema>>({
     resolver: zodResolver(bookingSchema),
-    defaultValues: {
-      check_in_date: new Date(),
-      check_out_date: new Date(new Date().setDate(new Date().getDate() + 1)),
-      number_of_guests: "",
-      booking_status: "",
-      guest_email: "",
-      guest_name: "",
-      room_type: "",
-      isPaid: false,
-      special_requests: "",
-    },
+    defaultValues: isEditMode
+      ? {
+          check_in_date: new Date(bookingToEdit?.check_in_date as Date),
+          check_out_date: new Date(bookingToEdit?.check_out_date as Date),
+          number_of_guests: bookingToEdit?.number_of_guests.toString(),
+          booking_status: bookingToEdit?.booking_status as string,
+          guest_email: bookingToEdit?.guest.email as string,
+          guest_name: bookingToEdit?.guest.fullName as string,
+          room_type: bookingToEdit?.room.room_type as string,
+          isPaid: bookingToEdit?.isPaid as boolean,
+          special_requests: bookingToEdit?.special_requests as string,
+        }
+      : {
+          check_in_date: new Date(),
+          check_out_date: new Date(
+            new Date().setDate(new Date().getDate() + 1)
+          ),
+          number_of_guests: "",
+          booking_status: "",
+          guest_email: "",
+          guest_name: "",
+          room_type: "",
+          isPaid: false,
+          special_requests: "",
+        },
   });
 
   function parseBookingsValues(values: z.infer<typeof bookingSchema>) {
@@ -94,7 +114,9 @@ export default function CreateEditBookingForm({ setOpen }: CreateEditProps) {
   function onSubmit(values: z.infer<typeof bookingSchema>) {
     if (isValid) {
       const data = parseBookingsValues(values);
-      createBookingFn(data);
+      isEditMode
+        ? updateBookingFn({ booking: data, id: bookingToEdit?.id as number })
+        : createBookingFn(data);
     }
     form.reset();
     setOpen(false);
@@ -333,7 +355,13 @@ export default function CreateEditBookingForm({ setOpen }: CreateEditProps) {
           )}
         />
         <Button className="w-full" type="submit">
-          {isWorking === "pending" ? <Spinner /> : "Create booking"}
+          {isWorking === "pending" ? (
+            <Spinner />
+          ) : isEditMode ? (
+            "Update Booking"
+          ) : (
+            "Create booking"
+          )}
         </Button>
       </form>
     </Form>

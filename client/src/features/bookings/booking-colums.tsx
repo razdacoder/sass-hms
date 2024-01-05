@@ -150,7 +150,7 @@ export const bookingsColumn: ColumnDef<Booking>[] = [
               <DialogTitle>Edit booking</DialogTitle>
             </DialogHeader>
             <CreateEditBookingForm
-              bookinToEdit={booking}
+              bookingToEdit={booking}
               setOpen={(value) => setOpen(value)}
             />
           </DialogContent>

@@ -15,3 +15,18 @@ export const createBooking = async (booking: CreateBooking) => {
   }
   return response.data;
 };
+
+export const updateBooking = async ({
+  booking,
+  id,
+}: {
+  booking: CreateBooking;
+  id: number;
+}) => {
+  const response = await api.put(`bookings/${id}/`, booking);
+  if (response.status != 200) {
+    throw new Error("Could not update booking");
+  }
+
+  return response.data;
+};
