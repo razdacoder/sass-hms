@@ -39,7 +39,7 @@ export default function MainNav() {
             size="lg"
             className={cn(
               "w-full flex bg-transparen justify-start pl-3 hover:text-white hover:bg-primary",
-              pathname === "/bookings" && "text-white bg-primary"
+              pathname.startsWith("/bookings") && "text-white bg-primary"
             )}
             asChild
           >

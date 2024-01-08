@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
-import { format } from "date-fns";
+import { format, formatDistance, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -23,3 +23,10 @@ export const formatDate = (dateStr: string): string => {
 
   return formattedDate;
 };
+
+export const formatDistanceFromNow = (dateStr: string) =>
+  formatDistance(parseISO(dateStr), new Date(), {
+    addSuffix: true,
+  })
+    .replace("about ", "")
+    .replace("in", "In");

@@ -8,6 +8,14 @@ export const getBookings = async () => {
   return response.data;
 };
 
+export const getBooking = async (id: number) => {
+  const response = await api.get(`bookings/${id}/`);
+  if (response.status != 200) {
+    throw new Error("Could not get bookings");
+  }
+  return response.data;
+};
+
 export const createBooking = async (booking: CreateBooking) => {
   const response = await api.post("bookings/", booking);
   if (response.status != 201) {
@@ -28,6 +36,20 @@ export const updateBooking = async ({
     throw new Error("Could not update booking");
   }
 
+  return response.data;
+};
+
+export const checkIn = async ({
+  id,
+  isPaid,
+}: {
+  id: number;
+  isPaid: boolean;
+}) => {
+  const response = await api.patch(`bookings/${id}/check_in/`, { isPaid });
+  if (response.status != 200) {
+    throw new Error("Could not updated status");
+  }
   return response.data;
 };
 

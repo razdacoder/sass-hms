@@ -1,6 +1,7 @@
 import AppLayout from "@/components/layout/AppLayout";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import Activate from "@/pages/Activate";
+import Booking from "@/pages/Booking";
 import Bookings from "@/pages/Bookings";
 import Dashboard from "@/pages/Dashboard";
 import Home from "@/pages/Home";
@@ -40,8 +41,8 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="rooms" element={<Rooms />} />
           <Route path="bookings" element={<Bookings />} />
-          {/* <Route path="bookings/:bookingId" element={<Booking />} />
-          <Route path="checkin/:bookingId" element={<Checkin />} />
+          <Route path="bookings/:bookingId" element={<Booking />} />
+          {/* <Route path="checkin/:bookingId" element={<Checkin />} />
           <Route path="cabins" element={<Cabins />} />
           <Route path="users" element={<Users />} />
           <Route path="settings" element={<Settings />} />
