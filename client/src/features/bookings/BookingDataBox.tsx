@@ -22,7 +22,7 @@ import { formatPriceToNaira } from "@/lib/utils";
 import { format } from "date-fns";
 import { LucideHome, Minus } from "lucide-react";
 import { useState } from "react";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useCheckIn from "./useCheckIn";
 import useCheckOut from "./useCheckOut";
 import useDeleteBooking from "./useDeleteBooking";
@@ -36,13 +36,14 @@ export default function BookingDataBox({ booking }: BookngDataBoxProps) {
   const { checkInFn, checkingin } = useCheckIn();
   const { checkingout, checkoutFn } = useCheckOut();
   const { deleteBookingFn, deleting } = useDeleteBooking();
+  const navigate = useNavigate();
 
   async function onCheckout() {
     await checkoutFn({ id: booking.id, isPaid });
   }
   async function onDelete() {
     await deleteBookingFn(booking.id);
-    redirect("/bookings");
+    navigate("/booking");
   }
   return (
     <section className=" border-1 rounded-md overflow-hidden mt-4">

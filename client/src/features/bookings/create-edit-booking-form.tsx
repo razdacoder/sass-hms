@@ -111,12 +111,15 @@ export default function CreateEditBookingForm({
 
   const { isValid } = form.formState;
 
-  function onSubmit(values: z.infer<typeof bookingSchema>) {
+  async function onSubmit(values: z.infer<typeof bookingSchema>) {
     if (isValid) {
       const data = parseBookingsValues(values);
       isEditMode
-        ? updateBookingFn({ booking: data, id: bookingToEdit?.id as number })
-        : createBookingFn(data);
+        ? await updateBookingFn({
+            booking: data,
+            id: bookingToEdit?.id as number,
+          })
+        : await createBookingFn(data);
     }
     form.reset();
     setOpen(false);

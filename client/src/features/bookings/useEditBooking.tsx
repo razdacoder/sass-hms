@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 export default function useEditBooking() {
   const queryClient = useQueryClient();
-  const { mutate: updateBookingFn, status: editing } = useMutation({
+  const { mutateAsync: updateBookingFn, status: editing } = useMutation({
     mutationFn: (data: { booking: CreateBooking; id: number }) =>
       updateBooking(data),
     onSuccess: () => {

@@ -4,9 +4,10 @@ import toast from "react-hot-toast";
 
 export default function useCheckIn() {
   const queryClient = useQueryClient();
-  const { mutate: checkInFn, status: checkingin } = useMutation({
+  const { mutateAsync: checkInFn, status: checkingin } = useMutation({
     mutationFn: (data: { id: number; isPaid: boolean }) => checkIn(data),
     onSuccess: (data) => {
+      console.log(data);
       toast.success("Guest checked in successfully");
       queryClient.invalidateQueries({ queryKey: ["booking", data.id] });
     },
