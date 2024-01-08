@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Spinner from "@/components/ui/spinner";
-import { Heading3 } from "@/components/ui/typography";
+import { Heading3, Lead } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,10 @@ export default function BookingPage() {
         <Spinner />
       </div>
     );
+  }
+
+  if (!booking) {
+    return <Lead className="mt-4">Booking not found</Lead>;
   }
   return (
     <div>

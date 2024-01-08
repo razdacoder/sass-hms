@@ -1,3 +1,14 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import Spinner from "@/components/ui/spinner";
@@ -11,7 +22,10 @@ import { formatPriceToNaira } from "@/lib/utils";
 import { format } from "date-fns";
 import { LucideHome, Minus } from "lucide-react";
 import { useState } from "react";
+import { redirect } from "react-router-dom";
 import useCheckIn from "./useCheckIn";
+import useCheckOut from "./useCheckOut";
+import useDeleteBooking from "./useDeleteBooking";
 
 type BookngDataBoxProps = {
   booking: Booking;
@@ -20,6 +34,16 @@ type BookngDataBoxProps = {
 export default function BookingDataBox({ booking }: BookngDataBoxProps) {
   const [isPaid, setIsPaid] = useState(booking.isPaid);
   const { checkInFn, checkingin } = useCheckIn();
+  const { checkingout, checkoutFn } = useCheckOut();
+  const { deleteBookingFn, deleting } = useDeleteBooking();
+
+  async function onCheckout() {
+    await checkoutFn({ id: booking.id, isPaid });
+  }
+  async function onDelete() {
+    await deleteBookingFn(booking.id);
+    redirect("/bookings");
+  }
   return (
     <section className=" border-1 rounded-md overflow-hidden mt-4">
       <header className="bg-primary px-4 py-4 font-medium flex items-center justify-between">
@@ -84,9 +108,30 @@ export default function BookingDataBox({ booking }: BookngDataBoxProps) {
           </Button>
         )}
         {booking.booking_status === "checked-in" && (
-          <Button size="lg">Check out</Button>
+          <Button onClick={onCheckout} size="lg">
+            {checkingout === "pending" ? <Spinner /> : "Check out"}
+          </Button>
         )}
-        <Button size="lg">Delete</Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button size="lg">Delete</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete this
+                booking and remove its data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={onDelete}>
+                {deleting === "pending" ? <Spinner /> : "Delete"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </footer>
     </section>
   );

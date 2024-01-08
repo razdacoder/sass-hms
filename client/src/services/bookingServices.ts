@@ -53,6 +53,20 @@ export const checkIn = async ({
   return response.data;
 };
 
+export const checkout = async ({
+  id,
+  isPaid,
+}: {
+  id: number;
+  isPaid: boolean;
+}) => {
+  const response = await api.patch(`bookings/${id}/check_out/`, { isPaid });
+  if (response.status != 200) {
+    throw new Error("Could not updated status");
+  }
+  return response.data;
+};
+
 export const deleteBooking = async (id: number) => {
   const response = await api.delete(`bookings/${id}/`);
   if (response.status != 204) {
